@@ -1,0 +1,71 @@
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+         http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
+    <changeSet id="1" author="BV">
+        <preConditions>
+            <not>
+                <tableExists tableName="bid"/>
+                <tableExists tableName="lot"/>
+            </not>
+        </preConditions>
+        <createTable tableName="bid">
+            <column name="id" type="INTEGER" autoIncrement="true">
+                <constraints primaryKey="true" unique="true" nullable="true"/>
+            </column>
+            <column name="bidder_name" type="VARCHAR(64)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="date" type="TIMESTAMP">
+                <constraints nullable="false"/>
+            </column>
+            <column name="lot_id" type="INTEGER">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet id="2" author="BV">
+        <preConditions>
+            <tableExists tableName="bid"/>
+        </preConditions>
+        <createTable tableName="lot">
+            <column name="id" type="INTEGER" autoIncrement="true">
+                <constraints primaryKey="true" unique="true" nullable="false"/>
+            </column>
+            <column name="status" type="VARCHAR(7)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="title" type="VARCHAR(64)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="description" type="VARCHAR(4096)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="start_price" type="INTEGER">
+                <constraints nullable="false"/>
+            </column>
+            <column name="bid_price" type="INTEGER">
+                <constraints nullable="false"/>
+            </column>
+            <column name="current_price" type="INTEGER">
+                <constraints nullable="false"/>
+            </column>
+            <column name="last_bid_id" type="INTEGER">
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet id="3" author="BV" >
+        <comment>adding constraints</comment>
+        <addForeignKeyConstraint baseTableName="lot"
+                                 baseColumnNames="last_bid_id"
+                                 constraintName="FK_LOT_LAST_BID"
+                                 referencedTableName="bid"
+                                 referencedColumnNames="id"/>
+        <addForeignKeyConstraint baseTableName="bid"
+                                 baseColumnNames="lot_id"
+                                 constraintName="FK_BID_LOT"
+                                 referencedTableName="lot"
+                                 referencedColumnNames="id"/>
+    </changeSet>
+</databaseChangeLog>
